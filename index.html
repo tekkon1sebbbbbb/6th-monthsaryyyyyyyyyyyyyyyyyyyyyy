@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- CRITICAL: Added viewport tag for mobile responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Monthsary!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            background-color: #F8F4F4; /* Soft pink background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .scene {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .scene.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* --- Scene 1: Floating Text & Flowers --- */
+        #scene1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background: linear-gradient(180deg, #fde4e4, #f8c2c2);
+            cursor: pointer;
+        }
+
+        .floating-text {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 8vw, 5rem);
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+            animation: float 6s ease-in-out infinite;
+            z-index: 10;
+            text-align: center; /* Ensures text is centered */
+        }
+        
+        .continue-prompt {
+            position: absolute;
+            bottom: 10%;
+            font-size: 1.2rem;
+            color: white;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .tulip {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            opacity: 0.9; /* Increased opacity */
+            animation: float-flower 10s ease-in-out infinite;
+        }
+
+        @keyframes float-flower {
+            0% { transform: translateY(50vh) rotate(0deg); }
+            100% { transform: translateY(-50vh) rotate(360deg); }
+        }
+
+        /* --- Scene 2: PIN Entry --- */
+        #scene-pin {
+             background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+             display: flex;
+             justify-content: center;
+             align-items: center;
+        }
+        .pin-container {
+            text-align: center;
+            color: #333;
+            background: rgba(255,255,255,0.4);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.2);
+            width: 90%;
+            max-width: 500px;
+        }
+        .pin-container h2 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: #c9377a;
+        }
+        .pin-inputs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .pin-input {
+            width: 45px;
+            height: 55px;
+            font-size: 2rem;
+            text-align: center;
+            border: 2px solid #ffb6c1;
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s, transform 0.2s;
+        }
+        .pin-input:focus {
+            border-color: #d6336c;
+            transform: scale(1.1);
+        }
+        
+        /* --- NEW Question Input Style --- */
+        #pin-question-container p {
+            font-size: 1.2rem;
+            color: #c9377a;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        #pin-question-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            border: 2px solid #ffb6c1;
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            outline: none;
+        }
+         #pin-question-input:focus {
+            border-color: #d6336c;
+        }
+        /* --- End New Question Style --- */
+
+        .pin-container.shake {
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+
+        /* --- Scene 3: Coding --- */
+        #scene2 {
+            background-color: #1a1a1a;
+            color: #00ff00;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+        }
+
+        #code-text {
+            white-space: pre;
+            font-size: 1.1rem;
+            text-align: left;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        /* --- Scene 4: Intermission --- */
+        #scene3 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background: linear-gradient(180deg, #fde4e4, #f8c2c2);
+            cursor: pointer;
+            padding: 20px;
+        }
+        
+        #scene3 h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 6vw, 4rem);
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+            animation: float 6s ease-in-out infinite;
+            z-index: 10;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        #scene3 p {
+            font-size: 1.2rem;
+            color: white;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+            margin-bottom: 2rem;
+            z-index: 10;
+        }
+
+        #song-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            width: 90%;
+            max-width: 400px;
+            z-index: 10;
+            max-height: 60vh; /* Added max-height */
+            overflow-y: auto; /* Added overflow scrolling */
+            padding-right: 5px; /* Space for scrollbar */
+        }
+
+        /* Scrollbar styling for webkit browsers */
+        #song-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        #song-list::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.7);
+            border-radius: 10px;
+        }
+        #song-list::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        
+        /* NEW: Song list header */
+        .song-list-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: white;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+            text-align: center;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            z-index: 10;
+        }
+        #song-list .song-list-header:first-child {
+            margin-top: 0;
+        }
+
+
+        .song-button {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            color: #c9377a;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            width: 100%;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            flex-shrink: 0; /* Prevent buttons from shrinking */
+        }
+
+        .song-button:hover {
+            transform: scale(1.05);
+            background-color: white;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+
+        /* --- Scene 5: Auto-Scrolling Letter --- */
+        #scene4 {
+            display: flex;
+            flex-direction: column; /* Changed to column */
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(180deg, #fdf6e3, #f5e1e1);
+            position: relative; /* Context for Snoopy */
+            overflow: hidden; /* Hide snoopy when he is off-screen */
+        }
+        
+        #letter-container {
+            width: 90%;
+            max-width: 500px; /* Narrower width */
+            height: 60vh; /* Shorter height */
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow-y: scroll; /* Hidden scrollbar but scrollable by JS */
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+            position: relative; /* Added for z-index stacking */
+            z-index: 10; /* Ensures letter is on top of Snoopy */
+        }
+
+        #letter-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, and Opera */
+        }
+        
+        #letter-content {
+            padding: 40px;
+            color: #444;
+            position: relative;
+        }
+        
+        #letter-content h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: #d6336c;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        #letter-content p {
+             font-family: 'Poppins', sans-serif;
+             font-size: 1.1rem;
+             font-weight: 500; /* Bolder font */
+             line-height: 1.8;
+             margin-bottom: 1.5rem;
+        }
+        
+        .image-placeholder {
+            width: 100%;
+            height: 300px;
+            background: #e0e0e0;
+            border-radius: 8px;
+            margin: 30px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transform: rotate(-1deg);
+            overflow: hidden; /* To contain the image */
+        }
+        
+        .image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        /* --- Snoopy Sticker --- */
+        .snoopy-sticker {
+            position: absolute;
+            width: 150px; 
+            height: auto;
+            top: 45%; /* Moved up a bit */
+            right: 50%;
+            margin-right: -400px; /* Pushes him off the right side of the letter */
+            z-index: 5; /* Places Snoopy behind the letter */
+            pointer-events: none;
+            animation: peek-a-boo-right 8s ease-in-out infinite 2.5s;
+        }
+
+        @keyframes peek-a-boo-right {
+            0%, 100% {
+                transform: translateX(0px); /* Hiding */
+            }
+            50% {
+                transform: translateX(-120px); /* Peeking */
+            }
+        }
+        
+        /* --- NEW: Scroll Indicator --- */
+        #scroll-indicator {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+            color: #c9377a;
+            opacity: 0;
+            z-index: 20;
+            pointer-events: none;
+            transition: opacity 0.5s ease-in-out;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translate(-50%, 0);
+            }
+            40% {
+                transform: translate(-50%, -15px);
+            }
+            60% {
+                transform: translate(-50%, -5px);
+            }
+        }
+        
+        /* --- NEW: Change Song Button --- */
+        #change-song-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #c9377a;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 20;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #change-song-button:hover {
+            transform: scale(1.05);
+        }
+        /* --- End Change Song Button --- */
+
+        /* --- START: MOBILE RESPONSIVE FIXES --- */
+        @media (max-width: 640px) {
+            .pin-container {
+                padding: 20px;
+            }
+            .pin-input {
+                width: 35px;
+                height: 45px;
+                font-size: 1.5rem;
+            }
+            #pin-question-input {
+                font-size: 1rem;
+            }
+            #code-text {
+                font-size: 0.8rem;
+            }
+            #letter-container {
+                width: 95%; /* Use more screen width */
+                height: 70vh; /* Use more screen height */
+            }
+            #letter-content {
+                padding: 20px; /* Less padding on mobile */
+            }
+            #letter-content h2 {
+                font-size: 2.5rem;
+            }
+            #letter-content p {
+                font-size: 1rem; /* Slightly smaller text for mobile */
+            }
+            
+            .snoopy-sticker {
+                width: 100px; /* Smaller snoopy */
+                top: 35%;
+                right: 0; /* Position relative to viewport right */
+                margin-right: 0; /* Reset desktop margin */
+                animation-name: peek-a-boo-right-mobile; /* Use new animation */
+            }
+
+            /* New animation for mobile */
+            @keyframes peek-a-boo-right-mobile {
+                0%, 100% {
+                    transform: translateX(100px); /* Start hidden off-screen (width = 100px) */
+                }
+                50% {
+                    transform: translateX(-30px); /* Peek in by 30px */
+                }
+            }
+            
+            .song-list-header {
+                font-size: 1.2rem;
+            }
+
+            /* NEW: Adjust button for mobile */
+            #change-song-button {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+                bottom: 15px;
+                right: 15px;
+            }
+        }
+        /* --- END: MOBILE RESPONSIVE FIXES --- */
+        
+    </style>
+</head>
+<body>
+
+    <!-- NEW Audio Player -->
+    <audio id="background-music" loop>
+        <!-- The source will be set by JavaScript -->
+        <source src="https://media.vocaroo.com/mp3/1dESDtb4Mvb8" type="audio/mpeg">
+    </audio>
+
+    <!-- Scene 1: Floating Text and Flowers --><div id="scene1" class="scene active">
+        <h1 class="floating-text">HAPPY MONTHSARYY BABYYYYY</h1>
+        <p class="continue-prompt">Click anywhere to continue</p>
+    </div>
+    
+    <!-- Scene 2: PIN Entry --><div id="scene-pin" class="scene">
+        <div class="pin-container" id="pin-container">
+            <h2 id="pin-title">Enter Our Special Code</h2>
+            
+            <!-- Step 1: PIN Inputs -->
+            <div class="pin-inputs" id="pin-inputs-container">
+                <input type="password" maxlength="1" class="pin-input" pattern="[0-9]*" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-input" pattern="[0-9]*" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-input" pattern="[0-9]*" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-input" pattern="[0-9]*" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-input" pattern="[0-9]*" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-input" pattern="[0-9]*" inputmode="numeric">
+            </div>
+
+            <!-- Step 2: Question (Hidden by default) -->
+            <div id="pin-question-container" class="hidden w-full">
+                <p>Where was our first date?</p>
+                <input type="text" id="pin-question-input" placeholder="Type the answer...">
+            </div>
+
+            <p id="pin-error" class="text-red-700 font-bold mt-4 h-4"></p>
+        </div>
+    </div>
+
+    <!-- Scene 3: Coding Animation --><div id="scene2" class="scene">
+        <pre id="code-text"></pre>
+    </div>
+
+    <!-- Scene 4: Intermission (NEW SONG SELECTION) --><div id="scene3" class="scene">
+        <h2>Pick a song, baby</h2>
+        <p>5 from me, 5 from you</p>
+        <div id="song-list">
+            <!-- My Songs (Titoy's) -->
+            <h3 class="song-list-header">My Songs (Titoy's)</h3>
+            <button class="song-button" data-src="https://media.vocaroo.com/mp3/1dESDtb4Mvb8">
+                Killswitch Lullaby - Flawed Mangoes
+            </button>
+            <button class="song-button" data-src="https://media.vocaroo.com/mp3/1grFblQbFISo">
+                Wonderwall - Oasis
+            </button>
+            <button class="song-button" data-src="https://media.vocaroo.com/mp3/1ibLJUBaC6dF">
+                I Will - The Beatles
+            </button>
+            <button class="song-button" data-src="https://media.vocaroo.com/mp3/1c9QiNrXiGi6">
+                Make It With You - Bread
+            </button>
+            <button class="song-button" data-src="https://media.vocaroo.com/mp3/1djgEpFd9LSs">
+                Moon River - Frank Ocean
+            </button>
+            
+            <!-- Her Songs (Iyang's) -->
+            <h3 class="song-list-header">Your Songs (Iyang's)</h3>
+            <button class="song-button" data-src="https://media.vocaroo.com/mp3/1aUq3jJXV3OU">
+                urs - NIKI
+            </button>
+            <button class="song-button" data-src="https://media.vocaroo.com/mp3/1cI7Cu7EaInQ">
+                Iris - Goo Goo Dolls
+            </button>
+            <button class="song-button" data-src="https://media.vocaroo.com/mp3/1lbtYhzcRUBO">
+                Autumn - NIKI
+            </button>
+            <button class="song-button" data-src="https://media.vocaroo.com/mp3/1cNAYBPc1BQg">
+                Still With You - Jungkook
+            </button>
+            <button class="song-button" data-src="https://media.vocaroo.com/mp3/12APy3zwJ1H9">
+                Tsunami - NIKI
+            </button>
+        </div>
+    </div>
+
+    <!-- Scene 5: Auto-scrolling Letter --><div id="scene4" class="scene">
+        
+        <img src="https://i.ibb.co/JW0yGXtV/Gemini-Generated-Image-5nq7ru5nq7ru5nq7-removebg-preview-1.png" alt="Peeking Snoopy" class="snoopy-sticker">
+
+       <div id="letter-container">
+           <div id="letter-content">
+               <h2>To My Dearest Love,</h2>
+               <!-- NEW LETTER CONTENT BELOW -->
+               <p>Hi baby, Happy 6th Monthsary sa atin!<br>
+Im not sure where to begin, but I really hope this small gift makes you smile. I spent almost a month working on this for you. In fact, ginawa ko to by sneaking in some time kapag nagc-call tayo. Kahit na nai-stress ako sa mga error ko habang ginagawa to, I would just look at you on the screen, and nawawala lahat ng pagod ko just by admiring you. Promise, maniwala ka man o hindi, its true... kahit naka-tiger look ako minsan pag tumitingin sayo, hehe.</p>
+               <p>Its a coding project, and honestly, may mga parts na nahirapan talaga ako (I even had to use some AI to help figure things out), but I poured so much love and effort into it because I wanted to make something special for you.</p>
+               <p>I even managed to put your favorite character, si Snoopy! Though medyo hindi ko alam kung paano at saan siya ilalagay, but it worked! :)</p>
+               
+               <!-- MOVED THE PICTURE UP -->
+               <div class="image-placeholder">
+                   <img src="https://i.ibb.co/h19Ggjkr/Messenger-creation-8-FB6045-F-E91-E-4043-AA9-A-91-F4-D89028-E2.jpg" alt="Our Picture">
+               </div>
+
+               <p>And please dont mind kung yung pic na nilagay ko is medyo old na yun lang yung meron akong picture natin eh, hehe. Sana magkaroon pa tayo ng maraming pictures together soon.</p>
+
+               <p>Anyways, I just really want to say how much I appreciate you, baby. Thank you for the 6 months na magkasama tayo, at sa buong year na weve known each other. I love you so much, and I truly hope this relationship grows even stronger. Let's get old together.</p>
+               <p>On a more serious note, baby, I want to use today to also say Im sorry. I know that these past months, Ive been hard on you, especially with my words. Theres no excuse for it. Please know that Im truly sorry.</p>
+               <p>Sa lahat ng away natin, baby, I am really, really sorry. I know na lagi kong bini-big deal yung mga bagay na hindi naman dapat, at yun yung nagiging dahilan ng away natin. Forgive me, baby. Na-realize ko na by doing that, I was preventing you from just being you, which I never meant to do. Kaya from now on, lahat ng sinabi kong bawal ay pwede na like when you call me beh, or yung chat na k, and all the other small things na pinagbawalan kita.</p>
+               <p>I promise I am trying my best to be better for you and for us. Thank you for always being there, baby. You really changed me for the better. From my bad habits, sa pag-uugali ko, even sa mga routine ko na napakagulo... ang galing no, how love can truly change a person.</p>
+               <p>Hindi naman sa pagiging makapal ang mukha, pero I really think were meant to be. Dun pa lang sa sinasabi nilang magkamukha tayo, kinikilig na ako. Kasi di ba, sabi nila those couples who look alike are meant to be together?</p>
+               <p>Kaya siyempre, paninindigan ko yun. Ill prove it by truly changing for the better. Hindi naman puwedeng paniwalaan ko lang yun nang walang gawa, di ba? You deserve the best version of me.</p>
+               <p>These past six months have been a real journey of learning and growing, not just for me, but for us. It hasnt always been perfect, but Im so thankful for your patience and for sticking with me. It makes me sobrang excited for our future and for everything well continue to build together.</p>
+               <p>So, cheers to more months (and years!) of annoying each other, supporting each other, and loving each other even more.</p>
+               <p>I love you more than you know. Happy 6th Monthsary again, baby.</p>
+               <!-- END OF NEW LETTER CONTENT -->
+               <p style="text-align:center; font-family: 'Dancing Script', cursive; font-size: 2rem;">Forever and always,<br>Titoy</p>
+           </div>
+       </div>
+
+       <!-- NEW: Scroll Indicator -->
+       <div id="scroll-indicator">
+           <span>&darr;</span>
+       </div>
+       
+       <!-- NEW: Change Song Button -->
+       <button id="change-song-button">Change Song</button>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const scenes = document.querySelectorAll('.scene');
+            let currentScene = 0;
+            const correctPin = "050925";
+            const correctDateAnswer = "coffee scape"; // The correct answer
+
+            // --- Sound Effects Setup ---
+            const synth = new Tone.Synth().toDestination();
+            const polySynth = new Tone.PolySynth(Tone.Synth).toDestination();
+            
+            // Sound for successful PIN entry
+            function playSuccessSound() {
+                polySynth.triggerAttackRelease(["C4", "E4", "G4"], "8n");
+            }
+            // Sound for scene transitions
+            function playTransitionSound() {
+                synth.triggerAttackRelease("C5", "16n");
+            }
+            // Sound for typing
+            const typingSynth = new Tone.MembraneSynth({octaves: 4}).toDestination();
+            function playTypingSound() {
+                typingSynth.triggerAttackRelease("C2", "32n");
+            }
+            
+            // --- Music Player Logic ---
+            const songButtons = document.querySelectorAll('.song-button');
+            const backgroundMusic = document.getElementById('background-music');
+            let musicStarted = false;
+
+            function playMusic(songSrc) {
+                // MODIFIED: Remove the guard to allow changing songs
+                // if (musicStarted) return; 
+                
+                // Set the song source before playing
+                backgroundMusic.querySelector('source').src = songSrc;
+                backgroundMusic.load(); 
+                backgroundMusic.play(); // Plays the <audio> tag
+                musicStarted = true;
+            }
+
+            // --- Scene Management ---
+            function switchScene(targetScene = -1) { // MODIFIED to accept target
+                playTransitionSound();
+                scenes[currentScene].classList.remove('active');
+                
+                if (targetScene > -1) {
+                    currentScene = targetScene;
+                } else {
+                    currentScene = (currentScene + 1) % scenes.length;
+                }
+                
+                scenes[currentScene].classList.add('active');
+
+                // Trigger animations for the new scene
+                if (currentScene === 2) { // Coding scene
+                    typeCode();
+                } else if (currentScene === 4) { // Letter scene (now scene 4)
+                    startLetterScroll();
+                }
+            }
+            
+            // --- Scene 1 Logic ---
+            const scene1 = document.getElementById('scene1');
+            scene1.addEventListener('click', async () => {
+                await Tone.start();
+                console.log('Audio context started');
+                // Add tulips to intermission scene
+                addTulipsToIntermission();
+                switchScene();
+            }, { once: true });
+
+            // Tulip Generation
+            const tulipSVG = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M 50,100 C 40,90 20,80 20,60 C 20,40 30,20 50,20 C 70,20 80,40 80,60 C 80,80 60,90 50,100 Z" fill="#F472B6"/><path d="M 50,20 C 40,30 40,50 50,60 C 60,50 60,30 50,20 Z" fill="#EC4899"/></svg>`;
+            for (let i = 0; i < 20; i++) {
+                const tulip = document.createElement('div');
+                tulip.classList.add('tulip');
+                tulip.innerHTML = tulipSVG;
+                tulip.style.left = `${Math.random() * 100}vw`;
+                tulip.style.animationDuration = `${Math.random() * 8 + 7}s`;
+                tulip.style.animationDelay = `${Math.random() * 5}s`;
+                const size = Math.random() * 50 + 40;
+                tulip.style.width = `${size}px`;
+                tulip.style.height = `${size}px`;
+                scene1.appendChild(tulip);
+            }
+            
+            function addTulipsToIntermission() {
+                 const scene3 = document.getElementById('scene3');
+                 for (let i = 0; i < 20; i++) {
+                    const tulip = document.createElement('div');
+                    tulip.classList.add('tulip');
+                    tulip.innerHTML = tulipSVG;
+                    tulip.style.left = `${Math.random() * 100}vw`;
+                    tulip.style.animationDuration = `${Math.random() * 8 + 7}s`;
+                    tulip.style.animationDelay = `${Math.random() * 5}s`;
+                    const size = Math.random() * 50 + 40;
+                    tulip.style.width = `${size}px`;
+                    tulip.style.height = `${size}px`;
+                    scene3.appendChild(tulip);
+                }
+            }
+
+            // --- Scene 2 Logic: PIN Entry ---
+            const pinInputs = document.querySelectorAll('.pin-input');
+            const pinContainer = document.getElementById('pin-container');
+            const pinError = document.getElementById('pin-error');
+            // --- NEW ELEMENTS ---
+            const pinTitle = document.getElementById('pin-title');
+            const pinInputsContainer = document.getElementById('pin-inputs-container');
+            const pinQuestionContainer = document.getElementById('pin-question-container');
+            const questionInput = document.getElementById('pin-question-input');
+            
+            pinInputs.forEach((input, index) => {
+                input.addEventListener('keyup', (e) => {
+                    if (e.key >= 0 && e.key <= 9 && input.value) {
+                        if (index < pinInputs.length - 1) { pinInputs[index + 1].focus(); }
+                    } else if (e.key === 'Backspace') {
+                         if (index > 0) { pinInputs[index - 1].focus(); }
+                    }
+                    checkPin();
+                });
+            });
+
+            function checkPin() {
+                const enteredPin = Array.from(pinInputs).map(i => i.value).join('');
+                if (enteredPin.length === 6) {
+                    if (enteredPin === correctPin) {
+                        playSuccessSound();
+                        pinError.textContent = '';
+                        // --- NEW LOGIC ---
+                        // Hide PINs, show question
+                        pinTitle.textContent = 'PIN Correct!';
+                        pinInputsContainer.classList.add('hidden');
+                        pinQuestionContainer.classList.remove('hidden');
+                        questionInput.focus();
+                        // --- END NEW LOGIC ---
+                    } else {
+                        pinError.textContent = 'Incorrect Code!';
+                        pinContainer.classList.add('shake');
+                        setTimeout(() => pinContainer.classList.remove('shake'), 500);
+                        pinInputs.forEach(input => input.value = '');
+                        pinInputs[0].focus();
+                    }
+                }
+            }
+
+            // --- NEW: Event Listener for the Question ---
+            questionInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    const answer = questionInput.value.trim().toLowerCase();
+                    if (answer === correctDateAnswer) {
+                        playSuccessSound();
+                        pinError.textContent = '';
+                        setTimeout(switchScene, 500); // Success! Go to hacker scene
+                    } else {
+                        pinError.textContent = 'Try again, baby!';
+                        pinContainer.classList.add('shake');
+                        setTimeout(() => pinContainer.classList.remove('shake'), 500);
+                        questionInput.value = '';
+                    }
+                }
+            });
+
+
+            // --- Scene 3 Logic: Typing Effect ---
+            const codeTextElement = document.getElementById('code-text');
+            const codeLines = [
+                'Please wait...', '',
+                '// Initializing love protocol...',
+                'const TitoysHeart = new Heartbeat();',
+                'const IyangsHeart = new Heartbeat();', // <-- FIXED THE TYPO HERE
+                'function syncHearts(heart1, heart2) {',
+                '  if (heart1.status === "connected" && heart2.status === "connected") {',
+                '    return "Perfect Match";',
+                '  }', '}', '',
+                'TitoysHeart.connect(IyangsHeart);',
+                'console.log("Connection Status: SYNCED");',
+                'console.log("Generating Message...");',
+                '// Process complete.',
+            ];
+            let lineIndex = 0;
+            let charIndex = 0;
+            
+            function typeCode() {
+                if (lineIndex < codeLines.length) {
+                    if (charIndex < codeLines[lineIndex].length) {
+                        playTypingSound();
+                        codeTextElement.textContent += codeLines[lineIndex].charAt(charIndex);
+                        charIndex++;
+                        setTimeout(typeCode, 50);
+                    } else {
+                        codeTextElement.textContent += '\n';
+                        lineIndex++;
+                        charIndex = 0;
+                        setTimeout(typeCode, 150);
+                    }
+                } else {
+                     setTimeout(switchScene, 1500);
+                }
+            }
+
+            // --- Scene 4 Logic: Intermission Button ---
+            songButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const songSrc = button.getAttribute('data-src');
+                    playMusic(songSrc);
+                    // Add a small delay to let the music start before transitioning
+                    setTimeout(() => {
+                        switchScene();
+                    }, 1000); // 1-second delay
+                });
+            });
+
+            // --- Scene 5 Logic: Auto-Scroll ---
+            const letterContainer = document.getElementById('letter-container');
+            const scrollIndicator = document.getElementById('scroll-indicator');
+
+            function startLetterScroll() {
+                // Show scroll indicator
+                if (scrollIndicator) scrollIndicator.style.opacity = '1';
+
+                const scrollHeight = letterContainer.scrollHeight - letterContainer.clientHeight;
+                const scrollDuration = 70000; // REALLY slow scroll: 70 seconds
+                const startTime = Date.now();
+
+                function scrollStep() {
+                    const elapsedTime = Date.now() - startTime;
+                    if (elapsedTime < scrollDuration) {
+                        letterContainer.scrollTop = (elapsedTime / scrollDuration) * scrollHeight;
+                        requestAnimationFrame(scrollStep);
+                    } else {
+                        letterContainer.scrollTop = scrollHeight;
+                        // Hide indicator when scroll is done
+                        if (scrollIndicator) scrollIndicator.style.opacity = '0';
+                    }
+                }
+                requestAnimationFrame(scrollStep);
+            }
+
+            // NEW: Hide scroll indicator on manual scroll
+            letterContainer.addEventListener('scroll', () => {
+                 if (scrollIndicator) scrollIndicator.style.opacity = '0';
+            }, { once: true });
+            
+            
+            // --- NEW: Event Listener for Change Song Button ---
+            const changeSongButton = document.getElementById('change-song-button');
+            changeSongButton.addEventListener('click', () => {
+                // Stop the music
+                backgroundMusic.pause();
+                // Allow a new song to be selected
+                musicStarted = false; 
+                // Reset scroll position and indicator
+                letterContainer.scrollTop = 0;
+                if (scrollIndicator) scrollIndicator.style.opacity = '0';
+                
+                // Go back to the song selection scene (scene index 3)
+                switchScene(3); 
+            });
+        });
+    </script>
+</body>
+</html>
